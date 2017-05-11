@@ -18,6 +18,7 @@ public class CommandHandler {
 
     public static final String CMD_ADD = "add";
     public static final String CMD_LIST = "list";
+    public static final String CMD_UPDATE = "update";
     public static final String CMD_REMOVE = "remove";
 
     private boolean shouldExit;
@@ -56,6 +57,9 @@ public class CommandHandler {
 
             case CMD_LIST:
                 return list(params);
+
+            case CMD_UPDATE:
+                return update(params);
 
             case CMD_REMOVE:
                 return remove(params);
@@ -110,6 +114,27 @@ public class CommandHandler {
             System.out.println(rssFeed);
         }
         return true;
+    }
+
+    private boolean update(String[] params) {
+        if (params == null || params.length < 2) {
+            return false;
+        }
+
+        String name = params[0];
+        String url = params[1];
+        int period = RssFeed.DEFAULT_PERIOD;
+
+        if (params.length > 2) {
+            try {
+                period = Integer.parseInt(params[2]);
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        RssFeed rssFeed = new RssFeed(name, url, period);
+        return rssFeedStorage.update(rssFeed);
     }
 
     @SuppressWarnings("SimplifiableIfStatement")

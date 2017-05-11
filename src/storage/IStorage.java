@@ -21,6 +21,12 @@ public interface IStorage<T> {
     List<T> getAll();
 
     /**
+     * @param t instance of T to be updated at Storage
+     * @return true if instance was updated at Storage, false otherwise
+     */
+    boolean update(T t);
+
+    /**
      * @param t instance of T to be removed from Storage
      * @return true if instance was removed from Storage, false otherwise
      */
