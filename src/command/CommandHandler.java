@@ -1,6 +1,8 @@
 package command;
 
+import com.sun.deploy.util.StringUtils;
 import entity.RssFeed;
+import settings.Settings;
 import storage.RssFeedStorage;
 
 import java.util.Arrays;
@@ -20,6 +22,11 @@ public class CommandHandler {
     public static final String CMD_LIST = "list";
     public static final String CMD_UPDATE = "update";
     public static final String CMD_REMOVE = "remove";
+
+    public static final String CMD_SET = "set";
+    public static final String CMD_PRINT = "print";
+    public static final String CMD_USERNAME = "username";
+    public static final String CMD_EMAIL = "email";
 
     private boolean shouldExit;
     private RssFeedStorage rssFeedStorage;
@@ -63,6 +70,12 @@ public class CommandHandler {
 
             case CMD_REMOVE:
                 return remove(params);
+
+            case CMD_SET:
+                return set(params);
+
+            case CMD_PRINT:
+                return print(params);
 
             default:
                 return false;
@@ -156,6 +169,62 @@ public class CommandHandler {
         } else {
             return rssFeedStorage.remove(rssFeedToRemove);
         }
+    }
+
+    private boolean set(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        switch (params[0]) {
+            case CMD_USERNAME:
+                return setUsername(Arrays.copyOfRange(params, 1, params.length));
+
+            case CMD_EMAIL:
+                return setEmail(Arrays.copyOfRange(params, 1, params.length));
+
+            default:
+                return false;
+        }
+    }
+
+    private boolean print(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        switch (params[0]) {
+            case CMD_USERNAME:
+                System.out.println(Settings.get().getUsername());
+                return true;
+
+            case CMD_EMAIL:
+                System.out.println(Settings.get().getEmail());
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    private boolean setUsername(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        String username = StringUtils.join(Arrays.asList(params), " ");
+        Settings.get().setUsername(username);
+        return true;
+    }
+
+    private boolean setEmail(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        String email = StringUtils.join(Arrays.asList(params), " ");
+        Settings.get().setEmail(email);
+        return true;
     }
 
 }
