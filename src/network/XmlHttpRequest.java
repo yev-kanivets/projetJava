@@ -23,18 +23,18 @@ public class XmlHttpRequest {
     private static final int CONNECT_TIMEOUT = 10000; // 10 seconds
     private static final int READ_TIMEOUT = 10000; // 10 seconds
 
-    private String url;
+    private String stringUrl;
 
-    public XmlHttpRequest(String url) {
-        this.url = url;
+    public XmlHttpRequest(String stringUrl) {
+        this.stringUrl = stringUrl;
     }
 
     public Document execute() {
         Document document = null;
 
         try {
-            URL semurl = new URL(url);
-            URLConnection yc = semurl.openConnection();
+            URL url = new URL(stringUrl);
+            URLConnection yc = url.openConnection();
             yc.setConnectTimeout(CONNECT_TIMEOUT);
             yc.setReadTimeout(READ_TIMEOUT);
             BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream(), "UTF-8"));

@@ -2,8 +2,6 @@ package command;
 
 import com.sun.deploy.util.StringUtils;
 import entity.RssFeed;
-import network.XmlHttpRequest;
-import org.w3c.dom.Document;
 import settings.Settings;
 import storage.IStorage;
 
@@ -239,15 +237,10 @@ public class CommandHandler {
     }
 
     private boolean fetch(String[] params) {
+        // Just reset las fetched timestamp to 0
         for (RssFeed rssFeed : rssFeedStorage.getAll()) {
-            XmlHttpRequest xmlHttpRequest = new XmlHttpRequest(rssFeed.getUrl());
-            Document document = xmlHttpRequest.execute();
-            if (document == null) {
-                System.out.println("Failed to fetch " + rssFeed);
-            } else {
-                rssFeed.setLastFetchTimestamp(System.currentTimeMillis());
-                System.out.println("Fetched " + rssFeed.getName());
-            }
+            RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(), 0);
+            rssFeedStorage.update(newRssFeed);
         }
         return true;
     }

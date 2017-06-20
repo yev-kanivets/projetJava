@@ -1,8 +1,11 @@
 package network;
 
+import entity.Article;
 import entity.RssFeed;
 import org.w3c.dom.Document;
 import storage.IStorage;
+
+import java.util.List;
 
 /**
  * Util class to encapsulate logic of periodical RSS feed fetching.
@@ -56,8 +59,13 @@ public class RssFeedFetcher {
                         if (document == null) {
                             System.out.println("Failed to fetch " + rssFeed);
                         } else {
-                            rssFeed.setLastFetchTimestamp(currentTimestamp);
-                            System.out.println("Fetched " + rssFeed.getName());
+                            RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(),
+                                    currentTimestamp);
+                            rssFeedStorage.update(newRssFeed);
+
+                            RssFeedXmlParser parser = new RssFeedXmlParser(rssFeed, document);
+                            List<Article> articleList = parser.parse();
+                            System.out.println("Fetched " + articleList.size() + " articles from " + rssFeed.getName());
                         }
                     }
                 }

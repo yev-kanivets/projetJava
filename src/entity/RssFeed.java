@@ -10,10 +10,10 @@ public class RssFeed extends BaseEntity {
 
     public static final int DEFAULT_PERIOD = 15 * 60; // 15 minutes
 
-    private String name;
-    private String url;
-    private int period; // in seconds
-    private long lastFetchTimestamp;
+    private final String name;
+    private final String url;
+    private final int period; // in seconds
+    private final long lastFetchTimestamp;
 
     public RssFeed(String name, String url, int period) {
         this.name = name;
@@ -33,32 +33,16 @@ public class RssFeed extends BaseEntity {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUrl() {
         return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public int getPeriod() {
         return period;
     }
 
-    public void setPeriod(int period) {
-        this.period = period;
-    }
-
     public long getLastFetchTimestamp() {
         return lastFetchTimestamp;
-    }
-
-    public void setLastFetchTimestamp(long lastFetchTimestamp) {
-        this.lastFetchTimestamp = lastFetchTimestamp;
     }
 
     @Override
@@ -77,5 +61,14 @@ public class RssFeed extends BaseEntity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + period;
+        result = 31 * result + (int) (lastFetchTimestamp ^ (lastFetchTimestamp >>> 32));
+        return result;
     }
 }

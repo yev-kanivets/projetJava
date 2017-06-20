@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,7 +45,7 @@ public class RssFeedStorage implements IStorage<RssFeed> {
 
     @Override
     public List<RssFeed> getAll() {
-        return rssFeedList;
+        return Collections.unmodifiableList(rssFeedList);
     }
 
     @Override
