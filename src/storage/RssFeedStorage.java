@@ -30,7 +30,7 @@ public class RssFeedStorage implements IStorage<RssFeed> {
 
     @SuppressWarnings("SimplifiableIfStatement")
     @Override
-    public boolean add(RssFeed rssFeed) {
+    public synchronized boolean add(RssFeed rssFeed) {
         if (rssFeed == null) {
             return false;
         }
@@ -44,12 +44,12 @@ public class RssFeedStorage implements IStorage<RssFeed> {
     }
 
     @Override
-    public List<RssFeed> getAll() {
-        return Collections.unmodifiableList(rssFeedList);
+    public synchronized List<RssFeed> getAll() {
+        return new ArrayList<>(rssFeedList);
     }
 
     @Override
-    public boolean update(RssFeed rssFeed) {
+    public synchronized boolean update(RssFeed rssFeed) {
         if (rssFeed == null) {
             return false;
         }
@@ -78,7 +78,7 @@ public class RssFeedStorage implements IStorage<RssFeed> {
 
     @SuppressWarnings("SimplifiableIfStatement")
     @Override
-    public boolean remove(RssFeed rssFeed) {
+    public synchronized boolean remove(RssFeed rssFeed) {
         if (rssFeed == null) {
             return false;
         }
