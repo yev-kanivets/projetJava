@@ -2,8 +2,10 @@ package command;
 
 import com.sun.deploy.util.StringUtils;
 import entity.RssFeed;
+import network.XmlHttpRequest;
+import org.w3c.dom.Document;
 import settings.Settings;
-import storage.RssFeedStorage;
+import storage.IStorage;
 
 import java.util.Arrays;
 
@@ -28,11 +30,13 @@ public class CommandHandler {
     public static final String CMD_USERNAME = "username";
     public static final String CMD_EMAIL = "email";
 
-    private boolean shouldExit;
-    private RssFeedStorage rssFeedStorage;
+    public static final String CMD_FETCH = "fetch";
 
-    public CommandHandler() {
-        rssFeedStorage = new RssFeedStorage();
+    private boolean shouldExit;
+    private IStorage<RssFeed> rssFeedStorage;
+
+    public CommandHandler(IStorage<RssFeed> rssFeedStorage) {
+        this.rssFeedStorage = rssFeedStorage;
     }
 
     /**
@@ -77,6 +81,9 @@ public class CommandHandler {
             case CMD_PRINT:
                 return print(params);
 
+            case CMD_FETCH:
+                return fetch(params);
+
             default:
                 return false;
         }
@@ -89,8 +96,12 @@ public class CommandHandler {
     private boolean help(String[] params) {
         System.out.println("Here are options:\n" +
                 " - add RSS link with <name> <link> <period of check in second> (optional). Example: 'add rss1 http://google.com'\n" +
+                " - update RSS link with <name> <link> <period of check in second> (optional). Example: 'update rss1 http://google.com'\n" +
                 " - list added RSS links. Example: 'list'\n" +
-                " - remove RSS link by name. Example: 'remove rss1'");
+                " - remove RSS link by name. Example: 'remove rss1'\n" +
+                " - set username. Example: 'set username Test'\n" +
+                " - set email. Example 'set email test@gmail.com'\n" +
+                " - fetch RSS feed from all links. Example 'fetch'");
         return true;
     }
 
@@ -224,6 +235,20 @@ public class CommandHandler {
 
         String email = StringUtils.join(Arrays.asList(params), " ");
         Settings.get().setEmail(email);
+        return true;
+    }
+
+    private boolean fetch(String[] params) {
+        for (RssFeed rssFeed : rssFeedStorage.getAll()) {
+            XmlHttpRequest xmlHttpRequest = new XmlHttpRequest(rssFeed.getUrl());
+            Document document = xmlHttpRequest.execute();
+            if (document == null) {
+                System.out.println("Failed to fetch " + rssFeed);
+            } else {
+                rssFeed.setLastFetchTimestamp(System.currentTimeMillis());
+                System.out.println("Fetched " + rssFeed.getName());
+            }
+        }
         return true;
     }
 

@@ -2,6 +2,7 @@ package settings;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,16 @@ public class Settings {
                 System.out.println("Failed to read username and email from " + FILENAME);
             }
         } else {
-            System.out.println("Failed to read username and email from " + FILENAME);
+            try {
+                boolean newFileCreated = file.createNewFile();
+                if (newFileCreated) {
+                    System.out.println("Created " + FILENAME);
+                } else {
+                    System.out.println("Failed to create " + FILENAME);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

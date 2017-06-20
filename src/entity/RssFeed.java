@@ -13,20 +13,20 @@ public class RssFeed extends BaseEntity {
     private String name;
     private String url;
     private int period; // in seconds
-    private long lastUpdateTimestamp;
+    private long lastFetchTimestamp;
 
     public RssFeed(String name, String url, int period) {
         this.name = name;
         this.url = url;
         this.period = period;
-        this.lastUpdateTimestamp = -1;
+        this.lastFetchTimestamp = -1;
     }
 
-    public RssFeed(String name, String url, int period, long lastUpdateTimestamp) {
+    public RssFeed(String name, String url, int period, long lastFetchTimestamp) {
         this.name = name;
         this.url = url;
         this.period = period;
-        this.lastUpdateTimestamp = lastUpdateTimestamp;
+        this.lastFetchTimestamp = lastFetchTimestamp;
     }
 
     public String getName() {
@@ -53,12 +53,12 @@ public class RssFeed extends BaseEntity {
         this.period = period;
     }
 
-    public long getLastUpdateTimestamp() {
-        return lastUpdateTimestamp;
+    public long getLastFetchTimestamp() {
+        return lastFetchTimestamp;
     }
 
-    public void setLastUpdateTimestamp(long lastUpdateTimestamp) {
-        this.lastUpdateTimestamp = lastUpdateTimestamp;
+    public void setLastFetchTimestamp(long lastFetchTimestamp) {
+        this.lastFetchTimestamp = lastFetchTimestamp;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class RssFeed extends BaseEntity {
             return isEquals(name, rssFeed.getName())
                     && isEquals(url, rssFeed.getUrl())
                     && period == rssFeed.getPeriod()
-                    && lastUpdateTimestamp == rssFeed.getLastUpdateTimestamp();
+                    && lastFetchTimestamp == rssFeed.getLastFetchTimestamp();
         } else {
             return false;
         }

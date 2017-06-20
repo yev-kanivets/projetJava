@@ -96,7 +96,7 @@ public class RssFeedStorage implements IStorage<RssFeed> {
 
             for (RssFeed rssFeed : rssFeedList) {
                 pw.println(rssFeed.getName() + "\t" + rssFeed.getUrl() + "\t" + rssFeed.getPeriod()
-                        + "\t" + rssFeed.getLastUpdateTimestamp());
+                        + "\t" + rssFeed.getLastFetchTimestamp());
             }
 
             pw.close();
