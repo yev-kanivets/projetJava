@@ -4,6 +4,7 @@ import entity.Article;
 import entity.RssFeed;
 import org.w3c.dom.Document;
 import storage.IStorage;
+import util.Out;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class RssFeedFetcher {
                         XmlHttpRequest xmlHttpRequest = new XmlHttpRequest(rssFeed.getUrl());
                         Document document = xmlHttpRequest.execute();
                         if (document == null) {
-                            System.out.println("Failed to fetch " + rssFeed);
+                            Out.get().error("Failed to fetch " + rssFeed);
                         } else {
                             RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(),
                                     currentTimestamp);
@@ -65,7 +66,7 @@ public class RssFeedFetcher {
 
                             RssFeedXmlParser parser = new RssFeedXmlParser(rssFeed, document);
                             List<Article> articleList = parser.parse();
-                            System.out.println("Fetched " + articleList.size() + " articles from " + rssFeed.getName());
+                            Out.get().info("Fetched " + articleList.size() + " articles from " + rssFeed.getName());
                         }
                     }
                 }
@@ -73,7 +74,7 @@ public class RssFeedFetcher {
                 try {
                     Thread.sleep(CHECK_PERIOD);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Out.get().trace(e);
                 }
             }
         }

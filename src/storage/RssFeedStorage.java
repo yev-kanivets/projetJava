@@ -1,13 +1,13 @@
 package storage;
 
 import entity.RssFeed;
+import util.Out;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -102,7 +102,7 @@ public class RssFeedStorage implements IStorage<RssFeed> {
 
             pw.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
     }
 
@@ -112,7 +112,7 @@ public class RssFeedStorage implements IStorage<RssFeed> {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                Out.get().trace(e);
             }
         }
 
@@ -133,14 +133,14 @@ public class RssFeedStorage implements IStorage<RssFeed> {
                         RssFeed rssFeed = new RssFeed(name, url, period, lastUpdate);
                         rssFeedList.add(rssFeed);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Out.get().trace(e);
                     }
                 }
             }
 
             sc.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
     }
 

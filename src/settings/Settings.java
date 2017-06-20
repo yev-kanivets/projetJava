@@ -1,5 +1,7 @@
 package settings;
 
+import util.Out;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,7 +62,7 @@ public class Settings {
             try {
                 sc = new Scanner(file);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Out.get().trace(e);
             }
 
             if (sc != null) {
@@ -73,23 +75,23 @@ public class Settings {
                     username = lines.get(0).isEmpty() ? null : lines.get(0);
                     email = lines.get(1).isEmpty() ? null : lines.get(1);
                 } else {
-                    System.out.println("Failed to read username and email from " + FILENAME);
+                    Out.get().error("Failed to read username and email from " + FILENAME);
                 }
 
                 sc.close();
             } else {
-                System.out.println("Failed to read username and email from " + FILENAME);
+                Out.get().error("Failed to read username and email from " + FILENAME);
             }
         } else {
             try {
                 boolean newFileCreated = file.createNewFile();
                 if (newFileCreated) {
-                    System.out.println("Created " + FILENAME);
+                    Out.get().info("Created " + FILENAME);
                 } else {
-                    System.out.println("Failed to create " + FILENAME);
+                    Out.get().error("Failed to create " + FILENAME);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Out.get().trace(e);
             }
         }
     }
@@ -99,7 +101,7 @@ public class Settings {
         try {
             pw = new PrintWriter(FILENAME);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         if (pw != null) {

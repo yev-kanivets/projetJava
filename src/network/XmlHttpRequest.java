@@ -2,6 +2,7 @@ package network;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import util.Out;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,7 +54,7 @@ public class XmlHttpRequest {
             document = builder.parse(new InputSource(inputStream));
             inputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         return document;

@@ -4,6 +4,7 @@ import com.sun.deploy.util.StringUtils;
 import entity.RssFeed;
 import settings.Settings;
 import storage.IStorage;
+import util.Out;
 
 import java.util.Arrays;
 
@@ -92,7 +93,7 @@ public class CommandHandler {
     }
 
     private boolean help(String[] params) {
-        System.out.println("Here are options:\n" +
+        Out.get().info("Here are options:\n" +
                 " - add RSS link with <name> <link> <period of check in second> (optional). Example: 'add rss1 http://google.com'\n" +
                 " - update RSS link with <name> <link> <period of check in second> (optional). Example: 'update rss1 http://google.com'\n" +
                 " - list added RSS links. Example: 'list'\n" +
@@ -133,7 +134,7 @@ public class CommandHandler {
 
     private boolean list(String[] params) {
         for (RssFeed rssFeed : rssFeedStorage.getAll()) {
-            System.out.println(rssFeed);
+            Out.get().info(rssFeed.toString());
         }
         return true;
     }
@@ -204,11 +205,11 @@ public class CommandHandler {
 
         switch (params[0]) {
             case CMD_USERNAME:
-                System.out.println(Settings.get().getUsername());
+                Out.get().info(Settings.get().getUsername());
                 return true;
 
             case CMD_EMAIL:
-                System.out.println(Settings.get().getEmail());
+                Out.get().info(Settings.get().getEmail());
                 return true;
 
             default:

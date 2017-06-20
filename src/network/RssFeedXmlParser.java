@@ -5,6 +5,7 @@ import entity.RssFeed;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import util.Out;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class RssFeedXmlParser {
 
         NodeList nodeList = document.getElementsByTagName(TAG_ITEM);
         if (nodeList == null || nodeList.getLength() == 0) {
-            System.out.println("Unsupported format of XML.");
+            Out.get().error("Unsupported format of XML.");
         } else {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Article article = parseArticle((Element) nodeList.item(i));
@@ -52,35 +53,35 @@ public class RssFeedXmlParser {
         try {
             title = element.getElementsByTagName(TAG_TITLE).item(0).getTextContent();
         } catch (Exception e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         String description = null;
         try {
             description = element.getElementsByTagName(TAG_DESCRIPTION).item(0).getTextContent();
         } catch (Exception e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         String date = null;
         try {
             date = element.getElementsByTagName(TAG_PUB_DATE).item(0).getTextContent();
         } catch (Exception e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         String author = null;
         try {
             author = rssFeed.getUrl();
         } catch (Exception e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         String link = null;
         try {
             link = element.getElementsByTagName(TAG_LINK).item(0).getTextContent();
         } catch (Exception e) {
-            e.printStackTrace();
+            Out.get().trace(e);
         }
 
         return new Article(rssFeed.getName(), title, description, date, author, rssFeed.getUrl(), link);
