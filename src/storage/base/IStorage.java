@@ -1,5 +1,6 @@
-package storage;
+package storage.base;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +15,12 @@ public interface IStorage<T> {
      * @return true if instance was added to Storage, false otherwise
      */
     boolean add(T t);
+
+    /**
+     * @param collection with elements to add
+     * @return true if all of elements were added, false otherwise
+     */
+    boolean addAll(Collection<T> collection);
 
     /**
      * @return all instances that are stored in Storage at this moment

@@ -3,7 +3,7 @@ package command;
 import com.sun.deploy.util.StringUtils;
 import entity.RssFeed;
 import settings.Settings;
-import storage.IStorage;
+import storage.base.IStorage;
 import util.Out;
 
 import java.util.Arrays;

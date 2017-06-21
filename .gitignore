@@ -1,5 +1,6 @@
 .idea/
 out/
+default/
 *.iml
 *.DS_Store
 *.cfg

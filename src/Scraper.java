@@ -1,7 +1,7 @@
 import command.CommandHandler;
 import entity.RssFeed;
 import network.RssFeedFetcher;
-import storage.IStorage;
+import storage.base.IStorage;
 import storage.RssFeedStorage;
 
 import java.io.PrintWriter;

@@ -3,7 +3,8 @@ package network;
 import entity.Article;
 import entity.RssFeed;
 import org.w3c.dom.Document;
-import storage.IStorage;
+import storage.ArticleStorage;
+import storage.base.IStorage;
 import util.Out;
 
 import java.util.List;
@@ -60,14 +61,18 @@ public class RssFeedFetcher {
                         if (document == null) {
                             Out.get().error("Failed to fetch " + rssFeed);
                         } else {
-                            RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(),
-                                    currentTimestamp);
-                            rssFeedStorage.update(newRssFeed);
-
                             RssFeedXmlParser parser = new RssFeedXmlParser(rssFeed, document);
                             List<Article> articleList = parser.parse();
+
                             Out.get().info("Fetched " + articleList.size() + " articles from " + rssFeed.getName());
+
+                            IStorage<Article> articleStorage = new ArticleStorage(rssFeed);
+                            articleStorage.addAll(articleList);
                         }
+
+                        RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(),
+                                currentTimestamp);
+                        rssFeedStorage.update(newRssFeed);
                     }
                 }
 
