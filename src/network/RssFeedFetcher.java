@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import storage.ArticleStorage;
 import storage.base.IStorage;
 import util.Out;
+import util.UniqueArticleFilter;
 
 import java.util.List;
 
@@ -67,7 +68,11 @@ public class RssFeedFetcher {
                             Out.get().info("Fetched " + articleList.size() + " articles from " + rssFeed.getName());
 
                             IStorage<Article> articleStorage = new ArticleStorage(rssFeed);
+                            UniqueArticleFilter filter = new UniqueArticleFilter(articleStorage.getAll());
+                            articleList = filter.filter(articleList);
+
                             articleStorage.addAll(articleList);
+                            Out.get().info(articleList.size() + " new articles are added to storage.");
                         }
 
                         RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(),

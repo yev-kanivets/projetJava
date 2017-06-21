@@ -73,11 +73,9 @@ public class Article extends BaseEntity {
             Article article = (Article) obj;
             return isEquals(rss, article.getRss())
                     && isEquals(title, article.getTitle())
-                    && isEquals(description, article.getDescription())
                     && isEquals(date, article.getDate())
                     && isEquals(author, article.getAuthor())
-                    && isEquals(source, article.getSource())
-                    && isEquals(link, article.getLink());
+                    && isEquals(source, article.getSource());
         } else {
             return false;
         }
@@ -87,11 +85,9 @@ public class Article extends BaseEntity {
     public int hashCode() {
         int result = rss != null ? rss.hashCode() : 0;
         result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
         result = 31 * result + (author != null ? author.hashCode() : 0);
         result = 31 * result + (source != null ? source.hashCode() : 0);
-        result = 31 * result + (link != null ? link.hashCode() : 0);
         return result;
     }
 }

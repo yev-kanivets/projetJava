@@ -51,39 +51,43 @@ public class RssFeedXmlParser {
     private Article parseArticle(Element element) {
         String title = null;
         try {
-            title = element.getElementsByTagName(TAG_TITLE).item(0).getTextContent();
+            title = replaceTabs(element.getElementsByTagName(TAG_TITLE).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String description = null;
         try {
-            description = element.getElementsByTagName(TAG_DESCRIPTION).item(0).getTextContent();
+            description = replaceTabs(element.getElementsByTagName(TAG_DESCRIPTION).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String date = null;
         try {
-            date = element.getElementsByTagName(TAG_PUB_DATE).item(0).getTextContent();
+            date = replaceTabs(element.getElementsByTagName(TAG_PUB_DATE).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String author = null;
         try {
-            author = rssFeed.getUrl();
+            author = replaceTabs(rssFeed.getUrl());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String link = null;
         try {
-            link = element.getElementsByTagName(TAG_LINK).item(0).getTextContent();
+            link = replaceTabs(element.getElementsByTagName(TAG_LINK).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         return new Article(rssFeed.getName(), title, description, date, author, rssFeed.getUrl(), link);
+    }
+
+    private String replaceTabs(String string) {
+        return string.replace("\t", " ");
     }
 }
