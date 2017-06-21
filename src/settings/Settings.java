@@ -74,8 +74,6 @@ public class Settings {
                 if (lines.size() == 2) {
                     username = lines.get(0).isEmpty() ? null : lines.get(0);
                     email = lines.get(1).isEmpty() ? null : lines.get(1);
-                } else {
-                    Out.get().error("Failed to read username and email from " + FILENAME);
                 }
 
                 sc.close();

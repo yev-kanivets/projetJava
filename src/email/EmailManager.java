@@ -33,7 +33,7 @@ public class EmailManager {
         props.put("mail.smtp.port", "587");
     }
 
-    public static void send(String problem, String rss_link_name) {
+    public static void send(String problem) {
         if (Settings.get().getEmail() == null) return;
 
         Session session = Session.getInstance(props, new Authenticator() {
@@ -48,7 +48,7 @@ public class EmailManager {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(Settings.get().getEmail()));
             message.setSubject("Opps, smth went wrong during fetching or parsing rss feeds");
             message.setText("Dear " + (Settings.get().getUsername() == null ? "user" : Settings.get().getUsername()) +
-                    ",\n\nThe problem appeared during the fetching of " + rss_link_name + " feed. \n\n " +
+                    ",\n\nThe problem appeared during the fetching of feed. \n\n " +
                     problem + "\n\nBest regards");
 
             Transport.send(message);

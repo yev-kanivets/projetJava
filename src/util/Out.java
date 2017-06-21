@@ -1,5 +1,11 @@
 package util;
 
+import email.EmailQueueManager;
+import settings.Settings;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * Util class to handle all the logs in one place.
  * Created on 6/20/17.
@@ -17,11 +23,18 @@ public class Out {
         return instance;
     }
 
+    private EmailQueueManager emailQueueManager;
+
     private Out() {
+        emailQueueManager = new EmailQueueManager();
     }
 
     public synchronized void error(String message) {
         System.out.println(message);
+
+        if (Settings.get().getEmail() != null) {
+            emailQueueManager.addProblem(message);
+        }
     }
 
     public synchronized void info(String message) {
@@ -30,6 +43,13 @@ public class Out {
 
     public synchronized void trace(Exception e) {
         e.printStackTrace();
+
+        if (Settings.get().getEmail() != null) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            emailQueueManager.addProblem(sw.toString());
+        }
     }
 
 }
