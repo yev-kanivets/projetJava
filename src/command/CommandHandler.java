@@ -105,7 +105,8 @@ public class CommandHandler {
                 " - print username. Example: 'print username'\n" +
                 " - print email. Example 'print email'\n" +
                 " - print file size limit. Example 'print file_size_limit'\n" +
-                " - fetch RSS feed from all links. Example 'fetch'");
+                " - fetch RSS feed from all links. Example 'fetch'\n" +
+                " - help, print these options once more time");
         return true;
     }
 
