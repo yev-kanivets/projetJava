@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import util.Out;
+import util.TextFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,35 +52,35 @@ public class RssFeedXmlParser {
     private Article parseArticle(Element element) {
         String title = null;
         try {
-            title = replaceTabs(element.getElementsByTagName(TAG_TITLE).item(0).getTextContent());
+            title = normalize(element.getElementsByTagName(TAG_TITLE).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String description = null;
         try {
-            description = replaceTabs(element.getElementsByTagName(TAG_DESCRIPTION).item(0).getTextContent());
+            description = normalize(element.getElementsByTagName(TAG_DESCRIPTION).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String date = null;
         try {
-            date = replaceTabs(element.getElementsByTagName(TAG_PUB_DATE).item(0).getTextContent());
+            date = normalize(element.getElementsByTagName(TAG_PUB_DATE).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String author = null;
         try {
-            author = replaceTabs(rssFeed.getUrl());
+            author = normalize(rssFeed.getUrl());
         } catch (Exception e) {
             Out.get().trace(e);
         }
 
         String link = null;
         try {
-            link = replaceTabs(element.getElementsByTagName(TAG_LINK).item(0).getTextContent());
+            link = normalize(element.getElementsByTagName(TAG_LINK).item(0).getTextContent());
         } catch (Exception e) {
             Out.get().trace(e);
         }
@@ -87,7 +88,7 @@ public class RssFeedXmlParser {
         return new Article(rssFeed.getName(), title, description, date, author, rssFeed.getUrl(), link);
     }
 
-    private String replaceTabs(String string) {
-        return string.replace("\t", " ");
+    private String normalize(String string) {
+        return TextFilter.filter(string);
     }
 }
