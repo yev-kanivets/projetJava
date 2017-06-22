@@ -8,6 +8,8 @@ import storage.base.IStorage;
 import util.Out;
 import util.UniqueArticleFilter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,9 +69,9 @@ public class RssFeedFetcher {
 
                             Out.get().info("Fetched " + articleList.size() + " articles from " + rssFeed.getName());
 
-                            IStorage<Article> articleStorage = new ArticleStorage(rssFeed);
-                            UniqueArticleFilter filter = new UniqueArticleFilter(articleStorage.getAll());
-                            articleList = filter.filter(articleList);
+                            ArticleStorage articleStorage = new ArticleStorage(rssFeed);
+                            UniqueArticleFilter filter = new UniqueArticleFilter(articleStorage.getLastSavedArticle());
+                            articleList = filter.filter(new ArrayList<>(articleList));
 
                             articleStorage.addAll(articleList);
                             Out.get().info(articleList.size() + " new articles are added to storage.");

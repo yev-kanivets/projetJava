@@ -12,17 +12,19 @@ import java.util.*;
  */
 public class UniqueArticleFilter {
 
-    private final Set<Article> articleSet;
+    private final Article lastSavedArticle;
 
-    public UniqueArticleFilter(Collection<Article> articleCollection) {
-        articleSet = new HashSet<>(articleCollection);
+    public UniqueArticleFilter(Article lastSavedArticle) {
+        this.lastSavedArticle = lastSavedArticle;
     }
 
     public List<Article> filter(List<Article> articleList) {
         List<Article> result = new ArrayList<>();
 
         for (Article article : articleList) {
-            if (!articleSet.contains(article)) {
+            if (article.equals(lastSavedArticle)) {
+                break;
+            } else {
                 result.add(article);
             }
         }

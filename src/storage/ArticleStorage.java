@@ -2,6 +2,7 @@ package storage;
 
 import entity.Article;
 import entity.RssFeed;
+import settings.Settings;
 import storage.base.BaseStorage;
 import storage.base.IStorage;
 import util.Out;
@@ -9,8 +10,7 @@ import util.Out;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Implementation of {@link IStorage} interface to work with {@link Article} entities.
@@ -23,37 +23,51 @@ public class ArticleStorage extends BaseStorage<Article> {
     private static final String DIRECTORY = "default";
     private static final String HEADER_LINE = "rss\ttitle\tdescription\tdate\tauthor\tsource\tlink";
 
-    private final File storageFile;
+    private File storageFile;
+    private Article lastSavedArticle;
 
     public ArticleStorage(RssFeed rssFeed) {
         storageList = new ArrayList<>();
 
-        File directory = new File(DIRECTORY + File.separator + rssFeed.getName());
-        if (!directory.exists()) {
-            boolean directoryCreated = directory.mkdirs();
-            if (directoryCreated) {
-                File[] files = directory.listFiles();
-                if (files == null || files.length == 0) {
-                    storageFile = new File(directory, System.currentTimeMillis() + ".csv");
-                    putHeaderToFile();
-                } else {
-                    storageFile = files[0];
-                }
-            } else {
-                storageFile = null;
-                Out.get().error("Failed to create a directory for rss feed " + rssFeed.getName());
-            }
-        } else {
-            File[] files = directory.listFiles();
-            if (files == null || files.length == 0) {
-                storageFile = new File(directory, System.currentTimeMillis() + ".csv");
-                putHeaderToFile();
-            } else {
-                storageFile = files[0];
-            }
+        initStorageFile(rssFeed);
+        readFromFile();
+    }
+
+    @Override
+    public synchronized boolean add(Article article) {
+        if (article == null) {
+            return false;
         }
 
-        readFromFile();
+        storageList.add(0, article);
+        if (!storageList.isEmpty()) {
+            lastSavedArticle = storageList.get(0);
+        }
+
+        saveToFile();
+        return true;
+    }
+
+    @Override
+    public boolean addAll(Collection<Article> collection) {
+        if (collection == null) {
+            return false;
+        }
+
+        if (storageList.addAll(0, collection)) {
+            if (!storageList.isEmpty()) {
+                lastSavedArticle = storageList.get(0);
+            }
+
+            saveToFile();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Article getLastSavedArticle() {
+        return lastSavedArticle;
     }
 
     private void putHeaderToFile() {
@@ -119,6 +133,55 @@ public class ArticleStorage extends BaseStorage<Article> {
             sc.close();
         } catch (FileNotFoundException e) {
             Out.get().trace(e);
+        }
+    }
+
+    private void initStorageFile(RssFeed rssFeed) {
+        File directory = new File(DIRECTORY + File.separator + rssFeed.getName());
+        if (!directory.exists()) {
+            boolean directoryCreated = directory.mkdirs();
+            if (directoryCreated) {
+                findStorageFile(directory);
+            } else {
+                storageFile = null;
+                Out.get().error("Failed to create a directory for rss feed " + rssFeed.getName());
+            }
+        } else {
+            findStorageFile(directory);
+        }
+    }
+
+    private void findStorageFile(File directory) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            Arrays.sort(files, Comparator.comparing(File::getName));
+        }
+
+        if (files == null || files.length == 0) {
+            storageFile = new File(directory, System.currentTimeMillis() + ".csv");
+            putHeaderToFile();
+        } else {
+            findLasSavedArticle(files);
+            if (files[files.length - 1].length() >= Settings.get().getFileSizeLimit()) {
+                storageFile = new File(directory, System.currentTimeMillis() + ".csv");
+                putHeaderToFile();
+            } else {
+                storageFile = files[files.length - 1];
+            }
+        }
+    }
+
+    private void findLasSavedArticle(File[] files) {
+        for (int i = files.length - 1;i>=0;i--) {
+            storageFile = files[i];
+            readFromFile();
+            if (storageList.isEmpty()) {
+                continue;
+            } else {
+                lastSavedArticle = storageList.get(0);
+                storageList.clear();
+                break;
+            }
         }
     }
 
