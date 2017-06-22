@@ -28,6 +28,7 @@ public class CommandHandler {
     public static final String CMD_PRINT = "print";
     public static final String CMD_USERNAME = "username";
     public static final String CMD_EMAIL = "email";
+    public static final String CMD_FILE_SIZE_LIMIT = "file_size_limit";
 
     public static final String CMD_FETCH = "fetch";
 
@@ -100,6 +101,10 @@ public class CommandHandler {
                 " - remove RSS link by name. Example: 'remove rss1'\n" +
                 " - set username. Example: 'set username Test'\n" +
                 " - set email. Example 'set email test@gmail.com'\n" +
+                " - set file size limit in bytes. Example 'set file_size_limit 1048576'\n" +
+                " - print username. Example: 'print username'\n" +
+                " - print email. Example 'print email'\n" +
+                " - print file size limit. Example 'print file_size_limit'\n" +
                 " - fetch RSS feed from all links. Example 'fetch'");
         return true;
     }
@@ -193,6 +198,9 @@ public class CommandHandler {
             case CMD_EMAIL:
                 return setEmail(Arrays.copyOfRange(params, 1, params.length));
 
+            case CMD_FILE_SIZE_LIMIT:
+                return setFileSizeLimit(Arrays.copyOfRange(params, 1, params.length));
+
             default:
                 return false;
         }
@@ -210,6 +218,10 @@ public class CommandHandler {
 
             case CMD_EMAIL:
                 Out.get().info(Settings.get().getEmail());
+                return true;
+
+            case CMD_FILE_SIZE_LIMIT:
+                Out.get().info(Long.toString(Settings.get().getFileSizeLimit()));
                 return true;
 
             default:
@@ -234,6 +246,27 @@ public class CommandHandler {
 
         String email = StringUtils.join(Arrays.asList(params), " ");
         Settings.get().setEmail(email);
+        return true;
+    }
+
+    private boolean setFileSizeLimit(String[] params) {
+        if (params == null || params.length != 1) {
+            return false;
+        }
+
+        long fileSizeLimit = -1;
+        try {
+            fileSizeLimit = Long.parseLong(params[0]);
+        } catch (Exception e) {
+            Out.get().trace(e);
+        }
+
+        if (fileSizeLimit == -1) {
+            return false;
+        } else {
+            Settings.get().setFileSizeLimit(fileSizeLimit);
+        }
+
         return true;
     }
 
