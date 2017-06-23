@@ -125,7 +125,8 @@ public class CommandHandler {
                 " - trash add <string>, removes <string> from every article that is fetched. Example: 'trash add autres articles'\n" +
                 " - trash list, list a 'black list' of strings to be removed from every article that is fetched. Example: 'trash list'\n" +
                 " - trash remove <string>, removes <string> from 'black list'. Example: 'trash remove autres articles'\n" +
-                " - help, print these options once more time");
+                " - help, print these options once more time\n" +
+                " - exit, to exit the application.");
         return true;
     }
 
