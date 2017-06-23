@@ -89,6 +89,6 @@ public class RssFeedXmlParser {
     }
 
     private String normalize(String string) {
-        return TextFilter.filter(string);
+        return TextFilter.get().filter(string);
     }
 }

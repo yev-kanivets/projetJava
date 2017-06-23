@@ -7,6 +7,7 @@ import settings.Settings;
 import statistic.StatisticManager;
 import storage.base.IStorage;
 import util.Out;
+import util.TextFilter;
 
 import java.util.Arrays;
 
@@ -35,16 +36,15 @@ public class CommandHandler {
     public static final String CMD_FETCH = "fetch";
     public static final String CMD_STATISTIC = "statistic";
 
+    public static final String CMD_TRASH = "trash";
+
     private boolean shouldExit;
 
     private final IStorage<RssFeed> rssFeedStorage;
-    private final IStorage<Statistic> statisticStorage;
     private final StatisticManager statisticManager;
 
-    public CommandHandler(IStorage<RssFeed> rssFeedStorage, IStorage<Statistic> statisticStorage,
-                          StatisticManager statisticManager) {
+    public CommandHandler(IStorage<RssFeed> rssFeedStorage, StatisticManager statisticManager) {
         this.rssFeedStorage = rssFeedStorage;
-        this.statisticStorage = statisticStorage;
         this.statisticManager = statisticManager;
     }
 
@@ -96,6 +96,9 @@ public class CommandHandler {
             case CMD_STATISTIC:
                 return statistic(params);
 
+            case CMD_TRASH:
+                return trash(params);
+
             default:
                 return false;
         }
@@ -119,6 +122,9 @@ public class CommandHandler {
                 " - print file size limit. Example 'print file_size_limit'\n" +
                 " - fetch RSS feed from all links. Example 'fetch'\n" +
                 " - statistic, print statistic of application work for current day.\n" +
+                " - trash add <string>, removes <string> from every article that is fetched. Example: 'trash add autres articles'\n" +
+                " - trash list, list a 'black list' of strings to be removed from every article that is fetched. Example: 'trash list'\n" +
+                " - trash remove <string>, removes <string> from 'black list'. Example: 'trash remove autres articles'\n" +
                 " - help, print these options once more time");
         return true;
     }
@@ -296,6 +302,51 @@ public class CommandHandler {
     private boolean statistic(String[] params) {
         Out.get().info(statisticManager.getStatisticMessage());
         return true;
+    }
+
+    private boolean trash(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        switch (params[0]) {
+            case CMD_ADD:
+                return trashAdd(Arrays.copyOfRange(params, 1, params.length));
+
+            case CMD_LIST:
+                return trashList(Arrays.copyOfRange(params, 1, params.length));
+
+            case CMD_REMOVE:
+                return trashRemove(Arrays.copyOfRange(params, 1, params.length));
+
+            default:
+                return false;
+        }
+    }
+
+    private boolean trashAdd(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        String trash = StringUtils.join(Arrays.asList(params), " ");
+        return TextFilter.get().addTrash(trash);
+    }
+
+    private boolean trashList(String[] params) {
+        for (String trash : TextFilter.get().getTrashList()) {
+            Out.get().info(trash);
+        }
+        return true;
+    }
+
+    private boolean trashRemove(String[] params) {
+        if (params == null || params.length < 1) {
+            return false;
+        }
+
+        String trash = StringUtils.join(Arrays.asList(params), " ");
+        return TextFilter.get().removeTrash(trash);
     }
 
 }

@@ -18,10 +18,12 @@ public class StatisticManager {
 
     private static final int DAY_PERIOD = 24 * 60 * 60 * 1000;
 
+    private final Timer timer;
     private final IStorage<Statistic> statisticStorage;
 
     public StatisticManager(IStorage<Statistic> statisticStorage) {
         this.statisticStorage = statisticStorage;
+        timer = new Timer();
     }
 
     public String getStatisticMessage() {
@@ -84,7 +86,6 @@ public class StatisticManager {
             calendar.add(Calendar.HOUR, 24);
         }
 
-        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -95,5 +96,9 @@ public class StatisticManager {
                 }
             }
         }, calendar.getTime(), DAY_PERIOD);
+    }
+
+    public void stop() {
+        timer.cancel();
     }
 }

@@ -23,7 +23,7 @@ public class Scraper {
         IStorage<Statistic> statisticStorage = new StatisticStorage();
 
         StatisticManager statisticManager = new StatisticManager(statisticStorage);
-        CommandHandler commandHandler = new CommandHandler(rssFeedStorage, statisticStorage, statisticManager);
+        CommandHandler commandHandler = new CommandHandler(rssFeedStorage, statisticManager);
         RssFeedFetcher rssFeedFetcher = new RssFeedFetcher(rssFeedStorage, statisticStorage);
 
         Scanner sc = new Scanner(System.in);
@@ -42,6 +42,7 @@ public class Scraper {
         }
 
         rssFeedFetcher.stop();
+        statisticManager.stop();
 
         sc.close();
         pw.close();
