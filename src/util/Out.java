@@ -1,6 +1,6 @@
 package util;
 
-import email.EmailQueueManager;
+import email.ProblemEmailQueueManager;
 import settings.Settings;
 
 import java.io.PrintWriter;
@@ -23,17 +23,17 @@ public class Out {
         return instance;
     }
 
-    private EmailQueueManager emailQueueManager;
+    private ProblemEmailQueueManager problemEmailQueueManager;
 
     private Out() {
-        emailQueueManager = new EmailQueueManager();
+        problemEmailQueueManager = new ProblemEmailQueueManager();
     }
 
     public synchronized void error(String message) {
         System.out.println(message);
 
         if (Settings.get().getEmail() != null) {
-            emailQueueManager.addProblem(message);
+            problemEmailQueueManager.addProblem(message);
         }
     }
 
@@ -48,7 +48,7 @@ public class Out {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
-            emailQueueManager.addProblem(sw.toString());
+            problemEmailQueueManager.addProblem(sw.toString());
         }
     }
 

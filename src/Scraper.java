@@ -1,6 +1,8 @@
 import command.CommandHandler;
 import entity.RssFeed;
+import entity.Statistic;
 import network.RssFeedFetcher;
+import storage.StatisticStorage;
 import storage.base.IStorage;
 import storage.RssFeedStorage;
 
@@ -17,9 +19,10 @@ public class Scraper {
 
     public static void main(String args[]) {
         IStorage<RssFeed> rssFeedStorage = new RssFeedStorage();
+        IStorage<Statistic> statisticStorage = new StatisticStorage();
 
-        CommandHandler commandHandler = new CommandHandler(rssFeedStorage);
-        RssFeedFetcher rssFeedFetcher = new RssFeedFetcher(rssFeedStorage);
+        CommandHandler commandHandler = new CommandHandler(rssFeedStorage, statisticStorage);
+        RssFeedFetcher rssFeedFetcher = new RssFeedFetcher(rssFeedStorage, statisticStorage);
 
         Scanner sc = new Scanner(System.in);
         PrintWriter pw = new PrintWriter(System.out, true);

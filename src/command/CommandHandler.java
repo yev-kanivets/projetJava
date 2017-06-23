@@ -2,7 +2,9 @@ package command;
 
 import com.sun.deploy.util.StringUtils;
 import entity.RssFeed;
+import entity.Statistic;
 import settings.Settings;
+import statistic.StatisticManager;
 import storage.base.IStorage;
 import util.Out;
 
@@ -31,12 +33,15 @@ public class CommandHandler {
     public static final String CMD_FILE_SIZE_LIMIT = "file_size_limit";
 
     public static final String CMD_FETCH = "fetch";
+    public static final String CMD_STATISTIC = "statistic";
 
     private boolean shouldExit;
-    private IStorage<RssFeed> rssFeedStorage;
+    private final IStorage<RssFeed> rssFeedStorage;
+    private final IStorage<Statistic> statisticStorage;
 
-    public CommandHandler(IStorage<RssFeed> rssFeedStorage) {
+    public CommandHandler(IStorage<RssFeed> rssFeedStorage, IStorage<Statistic> statisticStorage) {
         this.rssFeedStorage = rssFeedStorage;
+        this.statisticStorage = statisticStorage;
     }
 
     /**
@@ -84,6 +89,9 @@ public class CommandHandler {
             case CMD_FETCH:
                 return fetch(params);
 
+            case CMD_STATISTIC:
+                return statistic(params);
+
             default:
                 return false;
         }
@@ -106,6 +114,7 @@ public class CommandHandler {
                 " - print email. Example 'print email'\n" +
                 " - print file size limit. Example 'print file_size_limit'\n" +
                 " - fetch RSS feed from all links. Example 'fetch'\n" +
+                " - statistic, print statistic of application work for current day.\n" +
                 " - help, print these options once more time");
         return true;
     }
@@ -277,6 +286,12 @@ public class CommandHandler {
             RssFeed newRssFeed = new RssFeed(rssFeed.getName(), rssFeed.getUrl(), rssFeed.getPeriod(), 0);
             rssFeedStorage.update(newRssFeed);
         }
+        return true;
+    }
+
+    private boolean statistic(String[] params) {
+        StatisticManager statisticManager = new StatisticManager(statisticStorage);
+        Out.get().info(statisticManager.getStatisticMessage());
         return true;
     }
 

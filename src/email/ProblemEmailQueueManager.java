@@ -12,7 +12,7 @@ import java.util.*;
  *
  * @author Evgenii Kanivets
  */
-public class EmailQueueManager {
+public class ProblemEmailQueueManager {
 
     private static final int SEND_DELAY = 10000;
     private static final DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
@@ -20,7 +20,7 @@ public class EmailQueueManager {
     private Timer timer;
     private final List<String> emailQueue;
 
-    public EmailQueueManager() {
+    public ProblemEmailQueueManager() {
         emailQueue = new ArrayList<>();
     }
 

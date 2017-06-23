@@ -42,4 +42,15 @@ public class Statistic extends BaseEntity {
     public int getArticlesSavedCount() {
         return articlesSavedCount;
     }
+
+    @Override
+    public String toString() {
+        return "Statistic{" +
+                "rss='" + rss + '\'' +
+                ", updateRequestCount=" + updateRequestCount +
+                ", failedUpdateRequestCount=" + failedUpdateRequestCount +
+                ", articlesFetchedCount=" + articlesFetchedCount +
+                ", articlesSavedCount=" + articlesSavedCount +
+                '}';
+    }
 }

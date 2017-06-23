@@ -5,12 +5,14 @@ import entity.RssFeed;
 import entity.Statistic;
 import org.w3c.dom.Document;
 import storage.ArticleStorage;
-import storage.StatisticStorage;
 import storage.base.IStorage;
 import util.Out;
 import util.UniqueArticleFilter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Util class to encapsulate logic of periodical RSS feed fetching.
@@ -28,9 +30,9 @@ public class RssFeedFetcher {
     private Thread fetcherTread;
     private boolean run;
 
-    public RssFeedFetcher(IStorage<RssFeed> rssFeedStorage) {
+    public RssFeedFetcher(IStorage<RssFeed> rssFeedStorage, IStorage<Statistic> statisticStorage) {
         this.rssFeedStorage = rssFeedStorage;
-        statisticStorage = new StatisticStorage();
+        this.statisticStorage = statisticStorage;
     }
 
     public void start() {
