@@ -1,7 +1,12 @@
 package statistic;
 
+import email.EmailManager;
 import entity.Statistic;
 import storage.base.IStorage;
+
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Special class to manage statistic.
@@ -10,6 +15,8 @@ import storage.base.IStorage;
  * @author Evgenii Kanivets
  */
 public class StatisticManager {
+
+    private static final int DAY_PERIOD = 24 * 60 * 60 * 1000;
 
     private final IStorage<Statistic> statisticStorage;
 
@@ -31,7 +38,7 @@ public class StatisticManager {
         }
 
         String rss = " RSS";
-        for (int i = 0; i < maxRssLength-2; i++) {
+        for (int i = 0; i < maxRssLength - 2; i++) {
             rss += " ";
         }
 
@@ -41,7 +48,17 @@ public class StatisticManager {
         sb.append(String.format("|" + rss + "| Update requests | Failed requests | Articles fetched | Articles saved |%n"));
         sb.append(String.format("+" + line + "+-----------------+-----------------+------------------+----------------+%n"));
 
+        int updateRequestSum = 0;
+        int failedUpdateRequestSum = 0;
+        int articlesFetchedSum = 0;
+        int articlesSavedSum = 0;
+
         for (Statistic statistic : statisticStorage.getAll()) {
+            updateRequestSum += statistic.getUpdateRequestCount();
+            failedUpdateRequestSum += statistic.getFailedUpdateRequestCount();
+            articlesFetchedSum += statistic.getArticlesFetchedCount();
+            articlesSavedSum += statistic.getArticlesSavedCount();
+
             sb.append(String.format(leftAlignFormat, statistic.getRss(), statistic.getUpdateRequestCount(),
                     statistic.getFailedUpdateRequestCount(), statistic.getArticlesFetchedCount(),
                     statistic.getArticlesSavedCount()));
@@ -49,6 +66,34 @@ public class StatisticManager {
 
         sb.append(String.format("+" + line + "+-----------------+-----------------+------------------+----------------+%n"));
 
+        sb.append(String.format(leftAlignFormat, "Total", updateRequestSum, failedUpdateRequestSum, articlesFetchedSum,
+                articlesSavedSum));
+
+        sb.append(String.format("+" + line + "+-----------------+-----------------+------------------+----------------+%n"));
+
         return sb.toString();
+    }
+
+    public void start() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 18);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+            calendar.add(Calendar.HOUR, 24);
+        }
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                EmailManager.sendStatistic(getStatisticMessage());
+                // Clear the Queue
+                for (Statistic statistic : statisticStorage.getAll()) {
+                    statisticStorage.remove(statistic);
+                }
+            }
+        }, calendar.getTime(), DAY_PERIOD);
     }
 }

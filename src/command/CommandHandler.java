@@ -36,12 +36,16 @@ public class CommandHandler {
     public static final String CMD_STATISTIC = "statistic";
 
     private boolean shouldExit;
+
     private final IStorage<RssFeed> rssFeedStorage;
     private final IStorage<Statistic> statisticStorage;
+    private final StatisticManager statisticManager;
 
-    public CommandHandler(IStorage<RssFeed> rssFeedStorage, IStorage<Statistic> statisticStorage) {
+    public CommandHandler(IStorage<RssFeed> rssFeedStorage, IStorage<Statistic> statisticStorage,
+                          StatisticManager statisticManager) {
         this.rssFeedStorage = rssFeedStorage;
         this.statisticStorage = statisticStorage;
+        this.statisticManager = statisticManager;
     }
 
     /**
@@ -290,7 +294,6 @@ public class CommandHandler {
     }
 
     private boolean statistic(String[] params) {
-        StatisticManager statisticManager = new StatisticManager(statisticStorage);
         Out.get().info(statisticManager.getStatisticMessage());
         return true;
     }

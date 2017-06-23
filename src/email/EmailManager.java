@@ -2,10 +2,10 @@ package email;
 
 import settings.Settings;
 
-import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 /**
  * The main purpose of this class is to send email in case smth went wrong during fetching or parsing rss feeds.
@@ -46,7 +46,7 @@ public class EmailManager {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(Settings.get().getEmail()));
-            message.setSubject("Opps, smth went wrong during fetching or parsing rss feeds");
+            message.setSubject("Scraper: Opps, smth went wrong during fetching or parsing rss feeds");
             message.setText("Dear " + (Settings.get().getUsername() == null ? "user" : Settings.get().getUsername()) +
                     ",\n\nThe problem appeared during the fetching of feed. \n\n " +
                     problem + "\n\nBest regards");
@@ -56,4 +56,29 @@ public class EmailManager {
             throw new RuntimeException(e);
         }
     }
+
+    public static void sendStatistic(String statistic) {
+        if (Settings.get().getEmail() == null) return;
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, password);
+            }
+        });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(Settings.get().getEmail()));
+            message.setSubject("Scraper: Daily statistic");
+            message.setContent("Dear " + (Settings.get().getUsername() == null ? "user" : Settings.get().getUsername()) +
+                    ",\n\nHere are the daily statistic for your instance of Scraper application. \n\n " +
+                    "<pre>" + statistic + "</pre>" + "\n\nBest regards", "text/html");
+
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
